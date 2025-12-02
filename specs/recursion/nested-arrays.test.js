@@ -9,8 +9,19 @@
  
  */
 
+
 function nestedAdd(array) {
-  // write code here
+  let sum = 0;
+
+  for (let i = 0; i < array.length; i++) {
+    if (!Array.isArray(array[i])) {
+      sum += array[i];
+    } else {
+      sum += nestedAdd(array[i])
+    }
+  }
+  // returns sum
+  return sum;
 }
 
 test.skip("nested arrays addition", () => {
