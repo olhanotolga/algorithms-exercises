@@ -14,13 +14,36 @@
 */
 
 function insertionSort(nums) {
-  // code goes here
+  if (nums.length === 1) {
+    return nums;
+  }
+
+  let sorted = [nums[0]];
+  
+  for (let i = 1; i < nums.length; i++) {
+    // need to compare current item to the ones in the already-sorted array starting from the end
+    for (let s = sorted.length - 1; s >= 0; s--) {
+      if (nums[i] > sorted[s]) {
+        // insert after
+        sorted.splice(s + 1, 0, nums[i]);
+        break;
+        // if it's smaller, go to the previous item in the sorted array.
+        // unless there is no previous item — in that case, place at the index 0
+      } else if (s === 0) {
+        sorted.splice(0, 0, nums[i])
+        break;
+      }
+      console.log('internal sorted:', sorted)
+    }
+    console.log('external sorted:', sorted)
+  }
+  return sorted;
 }
 
 // unit tests
 // do not modify the below code
 test.skip("insertion sort", function () {
-  const nums = [10, 5, 3, 8, 2, 6, 4, 7, 9, 1];
-  insertionSort(nums);
-  expect(nums).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const nums = [10, 5, 3, 8, 2, 6, 4, 7, 9, 1]; 
+  const sorted = insertionSort(nums);
+  expect(sorted).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 });
