@@ -18,9 +18,9 @@ const mergeSort = (nums) => {
   const splitPoint = Math.ceil(length/2);
   const left = nums.slice(0, splitPoint);
   const right = nums.slice(splitPoint);
-  console.log({
-    left, right
-  })
+  // console.log({
+  //   left, right
+  // })
   // call mergeSort of left and right
   const sortedLeft = mergeSort(left);
   const sortedRight = mergeSort(right);
