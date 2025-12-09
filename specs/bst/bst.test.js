@@ -17,18 +17,63 @@ right - Node/object - the right node which itself may be another tree
 */
 
 class Tree {
-  // code goes here
+  constructor() {
+    this.root = null;
+  }
+
+  add(value) {
+    const node = new Node(value);
+
+    if (this.root === null) {
+      // console.log('creating root node');
+      this.root = node;
+    } else {
+      let nextAvailable = this.root;
+
+      while (nextAvailable !== null) {
+        // console.log({nextAvailable, value});
+        if (value > nextAvailable.value) {
+          // console.log('moving next available right: ', nextAvailable.right);
+          if (nextAvailable.right === null) {
+            // console.log('found a spot right');
+            nextAvailable.right = node;
+            break;
+          } else {
+            nextAvailable = nextAvailable.right;
+          }
+        } else {
+          // console.log('moving next available left: ', nextAvailable.left);
+          if (nextAvailable.left === null) {
+            // console.log('found a spot left');
+            nextAvailable.left = node;
+            break;
+          } else {
+            nextAvailable = nextAvailable.left;
+          }
+        }
+      }
+    }
+    return this;
+  }
+
+  toObject() {
+    return this.root;
+  }
 }
 
 // you might consider using a Node class too
-// class Node {
-//   // code maybe goes here
-// }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
 // unit tests
 // do not modify the below code
-describe.skip("Binary Search Tree", function () {
-  it("creates a correct tree", () => {
+describe.skip('Binary Search Tree', function () {
+  it('creates a correct tree', () => {
     const nums = [3, 7, 4, 6, 5, 1, 10, 2, 9, 8];
     const tree = new Tree();
     nums.map((num) => tree.add(num));
