@@ -31,32 +31,39 @@ class LinkedList {
   }
   push(value) {
     const node = new Node(value);
-    this.length++;
     if (!this.head) {
       this.head = node;
     } else {
       this.tail.next = node;
     }
     this.tail = node;
+    return ++this.length;
   }
   pop() {
     return this.delete(this.length - 1);
   }
   _find(index) {
-    if (index >= this.length) return null;
+    if (index >= this.length) {
+      return null;
+    }
+
     let current = this.head;
     for (let i = 0; i < index; i++) {
       current = current.next;
     }
-
     return current;
   }
   get(index) {
     const node = this._find(index);
-    if (!node) return void 0;
+    if (!node) {
+      return void 0; // evaluates expression and returns undefined; void 0 is a convention
+    }
     return node.value;
   }
   delete(index) {
+    if (index < 0) return null;
+
+    // if head: redefine head, change next
     if (index === 0) {
       const head = this.head;
       if (head) {
@@ -68,14 +75,22 @@ class LinkedList {
       this.length--;
       return head.value;
     }
+    
+    const previous = this._find(index - 1);
+    const current = previous.next;
+    if (!current) {
+      return null;
+    }
+    
+    previous.next = current.next;
+    // if current was the last one (tail) (and it didn't have .next), previous one becomes new tail
+    if (!previous.next) {
+      this.tail = previous;
+    }
 
-    const node = this._find(index - 1);
-    const excise = node.next;
-    if (!excise) return null;
-    node.next = excise.next;
-    if (!node.next) this.tail = node.next;
     this.length--;
-    return excise.value;
+    
+    return current.value;
   }
 }
 
