@@ -1,10 +1,22 @@
 const breadthFirstTraverse = (queue, array) => {
-  // fill code in here
+  // start with [node], []
+  while (queue.length) {
+    const current = queue.shift();
+    array.push(current.value);
+
+    if (current.left) {
+      queue.push(current.left);
+    }
+    if (current.right) {
+      queue.push(current.right);
+    }
+  }
+  return array;
 };
 
 // unit tests
 // do not modify the below code
-describe.skip("breadth-first tree traversal", function () {
+describe("breadth-first tree traversal", function () {
   const answer = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 
   const tree = {
