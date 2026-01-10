@@ -14,11 +14,27 @@ const h3 = (string) =>
 // `contains` takes a string and tells you if a string is maybe in the bloom filter
 class BloomFilter {
   // you'll probably need some instance variables
+  constructor() {
+    this._array = new Array().fill(0);
+  }
   add(string) {
-    // code here
+    const hashed1 = h1(string);
+    this._array[hashed1] = 1;
+    const hashed2 = h2(string);
+    this._array[hashed2] = 1;
+    const hashed3 = h3(string);
+    this._array[hashed3] = 1;
+
+    return void 0;
   }
   contains(string) {
-    // code here
+    const hashed1 = h1(string);
+    const hashed2 = h2(string);
+    const hashed3 = h3(string);
+    if (this._array[hashed1] + this._array[hashed2] + this._array[hashed3] === 3) {
+      return true;
+    }
+    return false;
   }
 }
 
@@ -29,19 +45,19 @@ describe.skip("BloomFilter", function () {
   beforeEach(() => {
     bf = new BloomFilter();
   });
-  test.skip("returns false when empty", () => {
+  test("returns false when empty", () => {
     expect(bf.contains("Brian")).toBe(false);
     expect(bf.contains("Sarah")).toBe(false);
     expect(bf.contains("Simona")).toBe(false);
   });
-  test.skip("handles one item", () => {
+  test("handles one item", () => {
     expect(bf.contains("Brian")).toBe(false);
     bf.add("Brian");
     expect(bf.contains("Brian")).toBe(true);
     expect(bf.contains("Sarah")).toBe(false);
     expect(bf.contains("Simona")).toBe(false);
   });
-  test.skip("handles many items", () => {
+  test("handles many items", () => {
     const names = [
       "Brian",
       "Simona",
