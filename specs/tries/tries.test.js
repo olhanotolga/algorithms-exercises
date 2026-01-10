@@ -13,19 +13,89 @@ const { CITY_NAMES } = require("./cities.js");
 const _ = require("lodash"); // needed for unit tests
 
 class Node {
-  // you don't have to use this data structure, this is just how I did it
-  // you'll almost definitely need more methods than this and a constructor
-  // and instance variables
+  // we create either the root node or non-root node.
+  // if we pass a "", then it's the root node,
+  // if it's a longer string, then we create a node with the first char and the rest goes into children
+  constructor(string) {
+    this.children = [];
+    this.terminus = string.length === 1 ? true : false;
+    this.value = string[0];
+    
+    // new node can be created only with a single character as its value
+    if (string.length > 1) {
+      // creating recursively nodes for each character and adding them as children
+      const newNode = new Node(string.slice(1));
+      this.children.push(newNode);
+    }
+  }
+  // examples:
+  // - Boston: no children, just creates nodes for this word
+  // - Dallas: there are children, but the match doesn't happen, so just create nodes for this word
+  // - Dagger: there are children, and there is a match at D, so it goes one level deeper to a, and then to g but there is no match, so children of a are created and added to the trie-tree
+  add(string) {
+    // logic to build the tree by traversing nodes and their children
+    // looks where to put which (sub)string
+    // OR creates a new subtree for a word
+    const value = string[0];
+    const rest = string.slice(1);
+    for (let c = 0; c < this.children.length; c++) {
+      const child = this.children[c];
+      // found the necessary child (character) to:
+      // - either add the rest of the word to it
+      // - or mark the character as the last one in a given word
+      if (child.value === value) {
+        if (rest) {
+          // if the word does not end yet
+          child.add(rest);
+        } else {
+          child.terminus = true;
+        }
+        return;
+      }
+    }
+
+    const newNode = new Node(string);
+    this.children.push(newNode);
+  }
+
+  _complete(search, built, suggestions) {
+    // ??? search[0] !== this.value --> the beginning of the substring doesn't match this particular node's value, so this node isn't counted in the suggestions
+    if (suggestions.length >= 3 || (search && search[0] !== this.value)) {
+      return suggestions;
+    }
+    // characters match, word is complete, push it into suggestions
+    if (this.terminus) {
+      suggestions.push(`${built}${this.value}`);
+    }
+    // characters match, building full words recursively
+    for (let c = 0; c < this.children.length; c++) {
+      const child = this.children[c];
+      child._complete(search.substr(1), `${built}${this.value}`, suggestions)
+    }
+    return suggestions;
+  }
+
   complete(string) {
-    return [];
+    let completions = [];
+    // look inside the children to find the sequence of nodes to return
+    for (let c = 0; c < this.children.length; c++) {
+      const child = this.children[c];
+      // concatenate node values recursively
+      completions = completions.concat(child._complete(string, "", []));
+    }
+    return completions;
   }
 }
 
 const createTrie = (words) => {
-  // you do not have to do it this way; this is just how I did it
+  // start by creating the root
   const root = new Node("");
 
-  // more code should go here
+  // check words one by one, ignoring case
+  for (let w = 0; w < words.length; w++) {
+    // let the root create the entire trie-tree
+    root.add(words[w].toLowerCase());
+  }
 
   return root;
 };
